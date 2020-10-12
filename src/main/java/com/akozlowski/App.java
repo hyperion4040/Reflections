@@ -4,6 +4,7 @@ import com.akozlowski.domain.Employee;
 import com.akozlowski.domain.User;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
@@ -12,10 +13,17 @@ import java.util.logging.Logger;
 public class App {
         private static final Logger logger = Logger.getAnonymousLogger();
 
-    public static void main(String[] args) throws ClassNotFoundException {
-        reflectionForClassName();
-        reflectionForClassFields();
+    public static void main(String[] args) throws ClassNotFoundException, NoSuchMethodException {
+//        reflectionForClassName();
+//        reflectionForClassFields();
+//        reflectionForClassMethods();
+        reflectionForGivenClassMethodName("update");
+    }
 
+    private static void reflectionForGivenClassMethodName(final String methodName) throws NoSuchMethodException {
+        final Class<Employee> clazz = Employee.class;
+        final Method method = clazz.getMethod(methodName);
+        logger.log(Level.INFO, "The class has method with name: {0}",methodName);
     }
 
     private static void reflectionForClassName() throws ClassNotFoundException {
@@ -44,6 +52,16 @@ public class App {
         final List<Field> clazzDeclaredFieldList = Arrays.asList(clazz.getDeclaredFields());
 
         logger.log(Level.INFO, "Class {0} has fields: {1}", new Object[]{clazz, clazzDeclaredFieldList} );
+    }
+
+    private static void reflectionForClassMethods() {
+        final Class<Employee> clazz = Employee.class;
+
+        final List<Method> methodList = Arrays.asList(clazz.getMethods());
+        final List<Method> declaredMethodList = Arrays.asList(clazz.getDeclaredMethods());
+        methodList.forEach(method -> logger.log(Level.INFO, "{0}", method ));
+        logger.log(Level.INFO, "DECLARED METHODS VIEW");
+        declaredMethodList.forEach(method -> logger.log(Level.INFO, "{0}", method ));
 
     }
 }
