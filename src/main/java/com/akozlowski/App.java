@@ -6,6 +6,7 @@ import com.akozlowski.domain.User;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -13,18 +14,52 @@ import java.util.logging.Logger;
 public class App {
         private static final Logger logger = Logger.getAnonymousLogger();
 
-    public static void main(String[] args) throws ClassNotFoundException, NoSuchMethodException {
+    public static void main(String[] args) throws ClassNotFoundException, NoSuchMethodException, NoSuchFieldException {
 //        reflectionForClassName();
 //        reflectionForClassFields();
 //        reflectionForClassMethods();
         reflectionForGivenClassMethodName("update");
+        reflectionForGivenClassFieldName("employeeId");
+        reflectionForClassMethodWithParameters("setUpdated", Date.class);
+        reflectionForClassMethodWithPrimitiveParameter("setEmployeeId", int.class);
+        boolean result = checkIfMethodWithNameExist("setUpdated");
+        logger.log(Level.INFO, "Method exists: {0}",result);
+    }
+
+    private static boolean checkIfMethodWithNameExist(final String methodName) {
+        final Class<Employee> clazz = Employee.class;
+        return Arrays.stream(clazz.getDeclaredMethods()).anyMatch(method -> method.getName().equals(methodName));
+    }
+
+    private static void reflectionForClassMethodWithPrimitiveParameter(final String setEmplyeeId, final Class<Integer> integerClass) throws NoSuchMethodException {
+        final Class<Employee> clazz = Employee.class;
+        final Method method = clazz.getDeclaredMethod(setEmplyeeId, integerClass);
+
+        logger.log(Level.INFO, "The class has method with name: {0}",method);
+
+    }
+
+    private static void reflectionForClassMethodWithParameters(final String setUpdated, final Class<Date> date) throws NoSuchMethodException {
+        final Class<Employee> clazz = Employee.class;
+        final Method method = clazz.getDeclaredMethod(setUpdated, date);
+
+        logger.log(Level.INFO, "The class has method with name: {0}",method);
+    }
+
+    private static void reflectionForGivenClassFieldName(final String employeeId) throws NoSuchFieldException {
+        final Class<Employee> clazz = Employee.class;
+        final Field field = clazz.getField(employeeId);
+
+        logger.log(Level.INFO, "The class has field with name: {0}",field);
     }
 
     private static void reflectionForGivenClassMethodName(final String methodName) throws NoSuchMethodException {
         final Class<Employee> clazz = Employee.class;
-        final Method method = clazz.getMethod(methodName);
-        logger.log(Level.INFO, "The class has method with name: {0}",methodName);
+        final Method method = clazz.getDeclaredMethod(methodName);
+        logger.log(Level.INFO, "The class has method with name: {0}",method);
     }
+
+
 
     private static void reflectionForClassName() throws ClassNotFoundException {
         final Class<Employee> clazz = Employee.class;
