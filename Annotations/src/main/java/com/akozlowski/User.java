@@ -1,13 +1,16 @@
 package com.akozlowski;
 
-@Entity
+@Entity("user")
 public class User {
-    @Field(value = "id",isKey = true)
+    @Field(columnName = "id",isKey = true)
     private Long id;
     @Field
     private String name;
 
-    private int age;
+    @Field
+    private String password;
+
+//    private int age;
 
     public User(final Long id, final String name) {
         this.id = id;
