@@ -17,6 +17,10 @@ public class Employee extends User {
         this.date = date;
     }
 
+    private static boolean checkIfNumberIsModuloTwo(final int number) {
+        return number % 2 == 0;
+    }
+
     public void setEmployeeId(final int employeeId) {
         this.employeeId = employeeId;
     }

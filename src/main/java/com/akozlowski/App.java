@@ -4,6 +4,7 @@ import com.akozlowski.domain.Employee;
 import com.akozlowski.domain.User;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Date;
@@ -14,7 +15,7 @@ import java.util.logging.Logger;
 public class App {
         private static final Logger logger = Logger.getAnonymousLogger();
 
-    public static void main(String[] args) throws ClassNotFoundException, NoSuchMethodException, NoSuchFieldException {
+    public static void main(String[] args) throws ClassNotFoundException, NoSuchMethodException, NoSuchFieldException, InvocationTargetException, IllegalAccessException {
 //        reflectionForClassName();
 //        reflectionForClassFields();
 //        reflectionForClassMethods();
@@ -24,6 +25,27 @@ public class App {
         reflectionForClassMethodWithPrimitiveParameter("setEmployeeId", int.class);
         boolean result = checkIfMethodWithNameExist("setUpdated");
         logger.log(Level.INFO, "Method exists: {0}",result);
+        callReflectionMethodWithParameter("setEmployeeId", int.class);
+        boolean checkResult = callReflectionPrivateMethodWithParameterAndReturnType("checkIfNumberIsModuloTwo",4, int.class);
+        logger.log(Level.INFO, "Method exists and return the result: {0}",checkResult);
+
+    }
+
+    private static boolean callReflectionPrivateMethodWithParameterAndReturnType(final String methodName,final int number, final Class<Integer> integerClass) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        final Class<Employee> clazz = Employee.class;
+        final Method declaredMethod = clazz.getDeclaredMethod(methodName, integerClass);
+        declaredMethod.setAccessible(true);
+        final Object invoke = declaredMethod.invoke(null, number);
+        return (boolean) invoke;
+    }
+
+    private static void callReflectionMethodWithParameter(final String setEmployeeId, final Class<Integer> integerClass) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        final Class<Employee> clazz = Employee.class;
+        final Method method = clazz.getDeclaredMethod(setEmployeeId, integerClass);
+
+        method.invoke(new Employee(), 7);
+
+        logger.log(Level.INFO, "The class has method with name: {0}",method);
     }
 
     private static boolean checkIfMethodWithNameExist(final String methodName) {
